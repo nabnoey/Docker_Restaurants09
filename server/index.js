@@ -4,7 +4,7 @@ const app = express();
 import dotenv from "dotenv";
 dotenv.config();
 const PORT = process.env.PORT || 5000;
-import restaurantRouter from "./routers/restaurant.router";
+import restaurantRouter from "./routers/restaurant-router.js";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
