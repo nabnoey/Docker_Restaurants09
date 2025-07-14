@@ -5,12 +5,12 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   port: dbConfig.PORT,
   dialect: dbConfig.dialect,
-  loging: false,
+  logging: false,
 });
 
 testConnection = async () => {
   try {
-    await sequelize.authentyon();
+    await sequelize.authenticate();
     console.log("Connection Successfully");
   } catch (error) {
     console.log("Unable to connot Connet to the database error");
@@ -18,4 +18,4 @@ testConnection = async () => {
 };
 
 testConnection();
-module.exports = sequelize;
+export default sequelize;

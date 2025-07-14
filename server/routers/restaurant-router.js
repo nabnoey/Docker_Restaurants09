@@ -6,6 +6,4 @@ const router = express.Router();
 
 router.post("/", restaurantController.create);
 
-module.exports = router;
-
 export default router;

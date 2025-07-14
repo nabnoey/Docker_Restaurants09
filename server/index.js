@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
   res.send("Hello World nabnoey");
 });
 
-app.use("/api/v1/restaurant", restaurantRouter);
+app.use("/api/v1/restaurants", restaurantRouter);
 
 app.listen(PORT, () => {
   console.log("Listening to http://localhost:" + PORT);
