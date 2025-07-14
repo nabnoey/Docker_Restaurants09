@@ -13,6 +13,9 @@ services:
       - "/app/node_modules"
       #postgres ทำทั้งหมดให้รู้จักกัน โดยไม่ต้องระบุหมายเลข IP
       #username:password หลัง @ location db port:5432 หลัง / name db
+    command: nodemon --legacy-watch index.js
+    restart: always
+
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5433/app_db
       - HOST=db
