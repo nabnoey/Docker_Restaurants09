@@ -1,29 +1,30 @@
 import { type } from "os";
 import Restaurant from "../models/restaurant.model.js";
+import { title } from "process";
 
 const restaurantController = {};
 // Create and save a new restaurant
 
 exports.create = async (req, res) => {
-  const { name, type, imgageUrl } = req.body;
+  const { name, type, imageUrl } = req.body;
 
   //validate data เช็คค่าว่าเป็นค่าว่างไหม
-  if (!name || !type || !imgageUrl) {
+  if (!name || !type || !imageUrl) {
     res.status(400).send({ message: "Name, Type or ImgUrl can not be empty!" });
   }
   return;
 };
 
-await Restaurant.fideOne({ where: { name: name } }).then((restaurant) => {
+await Restaurant.fideOne({ where: { title } }).then((restaurant) => {
   if (restaurant) {
     res.status(400).send({ message: "Restaurant already exists'" });
     return;
   }
 
   const newRestaurant = {
-    name: name,
+    title: title,
     type: type,
-    imageUrl: imgageUrl,
+    imageUrl: imageUrl,
   };
 
   Restaurant.create(

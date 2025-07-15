@@ -1,14 +1,15 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./db.js";
+import { title } from "process";
 
 const Restaurant = sequelize.define("restaurant", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoincrement: ture,
+    autoIncrement: true,
   },
 
-  name: {
+  title: {
     type: DataTypes.STRING,
     allowNull: false,
   },
