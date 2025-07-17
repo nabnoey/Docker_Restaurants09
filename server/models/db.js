@@ -3,12 +3,12 @@ import dbConfig from "../config/db.config.js";
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
-  port: dbConfig.PORT,
-  dialect: dbConfig.dialect,
+  port: dbConfig.DBPORT,
+  dialect: dbConfig.DIALECT,
   logging: false,
 });
 
-testConnection = async () => {
+const testConnection = async () => {
   try {
     await sequelize.authenticate();
     console.log("Connection Successfully");
