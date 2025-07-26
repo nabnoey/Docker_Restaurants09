@@ -1,4 +1,3 @@
-#คล้ายภาษา python
 services:
   server:
     build:
@@ -11,11 +10,11 @@ services:
       - "./server:/app"
       # เข้าถึงตัว node module ได้
       - "/app/node_modules"
+    command: nodemon --legacy-watch index.js
+    restart:
+      always
       #postgres ทำทั้งหมดให้รู้จักกัน โดยไม่ต้องระบุหมายเลข IP
       #username:password หลัง @ location db port:5432 หลัง / name db
-    command: nodemon --legacy-watch index.js
-    restart: always
-
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5433/app_db
       - HOST=db
