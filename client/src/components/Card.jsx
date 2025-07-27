@@ -19,12 +19,12 @@ const Card = (props) => {
   };
 
   return (
-    <div className="card bg-base-100 w-96 shadow-sm">
+    <div className="card bg-base-100 w-96 shadow-sm bg-pink-100">
       <figure>
         <img src={props.img} alt="Restaurant" />
       </figure>
-      <div className="card-body">
-        <h2 className="card-title">
+      <div className="card-body ">
+        <h2 className="card-title text-color-black-500">
           {props.title}
           <div className="badge badge-secondary">NEW</div>
         </h2>
