@@ -22,7 +22,7 @@ function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: login.username, // หรือ email: login.email ถ้าจะใช้ email login
+          username: login.username, 
           password: login.password,
         }),
       });
@@ -34,8 +34,7 @@ function Login() {
           password: "",
         });
         setError("");
-        // ถ้าจะ redirect ไปหน้าหลัก ให้เพิ่มโค้ดตรงนี้ เช่น
-        // window.location.href = "/home";
+        
       } else {
         const errorData = await response.json();
         setError(errorData.message || "Unknown error");
