@@ -1,4 +1,5 @@
 import sequelize from "./db.js";
+//import (นำเข้า) สิ่งที่ชื่อว่า DataTypes จากไลบรารีที่ชื่อว่า "sequelize"
 import { DataTypes } from "sequelize";
 
 const User = sequelize.define("user", {

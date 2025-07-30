@@ -9,6 +9,7 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize"; // import operator เช่น AND OR
 
 const authController = {};
+//function Register รับ2 parameter คือ req(ผู้ใช้ส่งเข้ามา), res(ส่งข้อมูลกลับไปยังผู้ใช้)
 authController.Register = async (req, res) => {
   // user ส่ง ข้อมูลผ่าน body
   const { username, fullName, email, password } = req.body;
