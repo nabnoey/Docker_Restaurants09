@@ -5,51 +5,33 @@ const Update = () => {
   const { id } = useParams();
   const [restaurant, setRestaurant] = useState({
     title: "",
-    type: "",
+    type: "",     
     img: "",
   });
 
   //2.GEt Restaurant
   useEffect(() => {
-    //cal api: getAllRestaurants
-    fetch("http://localhost:3000/restaurants/" + id)
-      .then((res) => {
-        //convert to json format
-        console.log(res);
-        return res.json();
-      })
-      .then((response) => {
-        //save to state
-        setRestaurant(response);
-      })
-      .catch((err) => {
-        //cath error
-        console.log(err.message);
-      });
-  }, [id]);
+    // call API: getAllRestaurants
+    const getAllRestaurant = async () => {
+      try {
+        const response = await RestaurantService.getAllRestaurant();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setRestaurant({ ...restaurant, [name]: value });
-  };
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/restaurants/" + id, {
-        method: "PUT",
-        body: JSON.stringify(restaurant),
-      });
-      if (response.ok) {
-        alert("Restaurant Updated succesfully!!!");
-        setRestaurant({
-          title: "",
-          type: "",
-          img: "",
+        if (response.status === 200) {
+          setRestaurants(response.data);
+          SetFilterRestaurants(response.data);
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Get All Restaurant",
+          icon: "error",
+          text: error?.response?.data?.message || error.message,
         });
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    };
+
+    getAllRestaurant();
+  }, []); // ✅ อย่าลืมใส่ dependency array เพื่อให้เรียกแค่ตอน mount
+
   return (
     <div className="container mx-auto">
       <div class="relative flex flex-col justify-center h-screen overflow-hidden">
