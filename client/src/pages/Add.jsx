@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2"; 
+import restaurantService from "../services/restaurant.service";
 
 const Add = () => {
   const [restaurant, setRestaurant] = useState({
@@ -11,10 +13,23 @@ const Add = () => {
     const { name, value } = e.target;
     setRestaurant({ ...restaurant, [name]: value });
   };
+
+    const newRestaurant = {
+    title: restaurant.title,
+    type: restaurant.type,
+    imageUrl: restaurant.imageUrl,
+  };
+
+   const navigate = useNavigate();
+
+
   const handleSubmit = async () => {
     try {
       const response = await fetch("http://localhost:3000/restaurants", {
         method: "POST",
+        headers: {
+    "Content-Type": "application/json",
+  },
         body: JSON.stringify(restaurant),
       });
       if (response.ok) {
@@ -24,9 +39,23 @@ const Add = () => {
           type: "",
           img: "",
         });
+        navigate("/");
+      
+  } else {
+        const errorData = await response.json();
+        Swal.fire({
+          title: "Error adding restaurant",
+          icon: "error",
+          text: errorData.message || "Something went wrong!",
+        });
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error during add:", error);
+      Swal.fire({
+        title: "Error adding restaurant",
+        icon: "error",
+        text: error.message || "Something went wrong!",
+      });
     }
   };
   return (
@@ -36,7 +65,7 @@ const Add = () => {
           <h1 class="text-2xl font-semibold text-center text-gray-700 mb-6">
             Add Item
           </h1>
-          <form class="space-y-4">
+          <form class="space-y-4"  onSubmit={handleSubmit}>
             <div>
               <label class="label">
                 <span class="text-base label-text">Title</span>
@@ -88,7 +117,7 @@ const Add = () => {
               <button
                 type="submit"
                 class="btn bg-green-500 text-white px-6"
-                onClick={handleSubmit}
+        
               >
                 Add
               </button>

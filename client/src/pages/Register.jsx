@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; 
+import AuthService from "../services/auth.service";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 function Register() {
   const [register, setRegister] = useState({
@@ -9,6 +12,7 @@ function Register() {
     repeatPassword: "",
     
   });
+    const navigate = useNavigate();
 
   const [error, setError] = useState("");
 
@@ -26,7 +30,7 @@ function Register() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/v1/register",
+        "http://localhost:5000/api/v1/auth/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -177,7 +181,7 @@ function Register() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200" onClick={handleSubmit}
         >
           Register
         </button>

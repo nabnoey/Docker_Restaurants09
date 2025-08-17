@@ -1,123 +1,112 @@
 import React, { useState } from "react";
+import AuthService from "../services/auth.service";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
-function Login() {
-  const [login, setLogin] = useState({
-    username: "",  
-    password: "",
-  });
+const Login = () => {
+  // 1. Initialize state for login form data
+  const [login, setLogin] = useState({ username: "", password: "" });
 
-  const [error, setError] = useState("");
+  // 2. Hook for programmatic navigation
+  const navigate = useNavigate();
 
+  // 3. Handle input changes and update state
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setLogin((prev) => ({ ...prev, [name]: value }));
+    setLogin((prevLogin) => ({ ...prevLogin, [name]: value }));
   };
 
+  // 4. Handle form submission
   const handleSubmit = async (e) => {
+    // Prevent default form submission behavior (page reload)
     e.preventDefault();
-
     try {
-        //http://localhost:5000/api/v1/signin ต้องตรงกับ postman
-      const response = await fetch("http://localhost:5000/api/v1/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: login.username, 
-          password: login.password,
-        }),
-      });
+      const currentUser = await AuthService.login(
+        login.username,
+        login.password
+      );
 
-      if (response.ok) {
-        alert("Login successful!");
-        setLogin({
-          username: "",
-          password: "",
+      // Check for a successful login based on the response status
+      if (currentUser.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "User Login",
+          text: "Login successfully!",
+        }).then(() => {
+          // Navigate to the home page after successful login
+          navigate("/");
         });
-        setError("");
-        
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Unknown error");
       }
     } catch (error) {
-      console.error("Error during login:", error);
-      setError("Something went wrong. Please try again.");
+      // Handle login errors
+      // console.error("Login failed:", error);
+      Swal.fire({
+        icon: "error",
+        title: "User Login",
+        text: error?.response?.data?.message || "An unknown error occurred.",
+      });
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 dark:from-gray-900 dark:to-gray-800 px-4">
-      <form
-        className="bg-white dark:bg-gray-900 shadow-2xl rounded-2xl p-8 sm:p-10 w-full max-w-md space-y-6"
-        onSubmit={handleSubmit}
-      >
-        <h2 className="text-3xl font-extrabold text-center text-gray-900 dark:text-white">
-          Login to Your Account
-        </h2>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center px-4">
+      <div className="card w-full max-w-md shadow-2xl bg-base-100">
+        <div className="card-body space-y-4"> {/* <-- Corrected here */}
+          <h2 className="text-4xl font-bold text-center text-primary">
+            เข้าสู่ระบบ
+          </h2>
+          <p className="text-center text-gray-500">
+            กรุณากรอกข้อมูลเพื่อเข้าสู่ระบบ
+          </p>
 
-        {error && (
-          <p className="text-red-500 text-center text-sm font-semibold">{error}</p>
-        )}
+          {/* Username */}
+          <div className="form-control">
+            <label className="label font-medium">
+              <span className="label-text">ชื่อผู้ใช้</span>
+            </label>
+            <input
+              type="text"
+              name="username"
+              value={login.username}
+              onChange={handleChange}
+              placeholder="username"
+              className="input"
+            />
+          </div>
 
-        <div>
-          <label
-            htmlFor="username"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-200"
-          >
-            Username
-          </label>
-          <input
-            type="text"
-            name="username"
-            id="username"
-            value={login.username}
-            onChange={handleChange}
-            placeholder="Your username"
-            required
-            className="mt-1 w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-400"
-          />
+          {/* Password */}
+          <div className="form-control">
+            <label className="label font-medium">
+              <span className="label-text">รหัสผ่าน</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={login.password}
+              onChange={handleChange}
+              placeholder="Password"
+              required
+              className="input"
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <form className="form-control mt-6 space-y-3"  onSubmit={handleSubmit}>
+            <button type="submit" className="btn btn-primary w-full">
+              เข้าสู่ระบบ
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline btn-error w-full"
+              onClick={() => setLogin({ username: "", password: "" })}
+            >
+              ยกเลิก
+            </button>
+          </form>
         </div>
-
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-200"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            value={login.password}
-            onChange={handleChange}
-            required
-            className="mt-1 w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
-        >
-          Login
-        </button>
-
-        <button
-          type="button"
-          className="w-full bg-gray-300 hover:bg-gray-400 dark:bg-red-500 dark:hover:bg-red-600 text-black dark:text-white font-bold py-2 px-4 rounded-lg transition duration-200"
-          onClick={() =>
-            setLogin({
-              username: "",
-              password: "",
-            })
-          }
-        >
-          Cancel
-        </button>
-      </form>
+      </div>
     </div>
   );
-}
+};
 
 export default Login;

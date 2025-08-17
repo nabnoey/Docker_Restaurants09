@@ -4,10 +4,13 @@ import "./index.css";
 import router from "./routes/Router";
 import { RouterProvider } from "react-router";
 import NavBar from "./components/NavBar";
+import { AuthProvider } from "./context/auth.context";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
+    <AuthProvider>
     <NavBar />
     <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 );

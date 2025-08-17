@@ -1,4 +1,6 @@
 import React from "react";
+import restaurantService from "../services/restaurant.service"; // import เพื่อให้มันลบได้ ติดตั้งนาน
+
 
 const Card = (props) => {
   const handleDelete = async (id) => {
@@ -6,30 +8,31 @@ const Card = (props) => {
     if (!isConfirmed) return;
 
     try {
-      const response = await fetch("http://localhost:3000/restaurants/" + id, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        alert("Restaurant deleted successfully!");
-        window.location.reload();
-      }
+      // Use the deleteRestaurant function from your service
+      await restaurantService.deleteRestaurant(id);
+      
+      alert("Restaurant deleted successfully!");
+      // Reload the page after successful deletion
+      window.location.reload();
     } catch (error) {
       console.log(error);
+      // You should handle errors more gracefully here
+      alert("Failed to delete the restaurant.");
     }
   };
 
   return (
     <div className="card bg-base-100 w-96 shadow-sm bg-pink-100">
       <figure>
-        <img src={props.img} alt="Restaurant" />
+        <img src={props.imageUrl} alt="Restaurant" />
       </figure>
       <div className="card-body ">
-        <h2 className="card-title text-color-black-500">
+        <h2 className="card-title text-2xl font-bold text-gray-800">
           {props.title}
           <div className="badge badge-secondary">NEW</div>
         </h2>
         <p>{props.type}</p>
-        <div className="card-actions justify-end">
+        <div className="card-actions justify-end text-black-600">
           <button
             onClick={() => handleDelete(props.id)}
             className="btn btn-soft btn-error"

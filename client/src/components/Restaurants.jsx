@@ -4,7 +4,7 @@ const Restaurants = ({ restaurants }) => {
   return (
     <div className="flex">
       <div className="flex flex-wrap justify-center gap-4">
-        {restaurants &&
+      {restaurants && Array.isArray(restaurants) &&
           restaurants.map((restaurants) => {
             return (
               <Card
@@ -12,7 +12,7 @@ const Restaurants = ({ restaurants }) => {
                 id={restaurants.id}
                 title={restaurants.title}
                 type={restaurants.type}
-                img={restaurants.img}
+                imageUrl={restaurants.imageUrl}
               />
             );
           })}

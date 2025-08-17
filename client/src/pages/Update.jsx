@@ -1,37 +1,72 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
+import restaurantService from "../services/restaurant.service";
+import Swal from "sweetalert2";
+
 const Update = () => {
   //Get ID from URL
   const { id } = useParams();
-  const [restaurant, setRestaurant] = useState({
+  const [restaurants, setRestaurant] = useState({
     title: "",
-    type: "",     
-    img: "",
+    type: "",
+    imageUrl: "",
   });
 
-  //2.GEt Restaurant
-  useEffect(() => {
-    // call API: getAllRestaurants
-    const getAllRestaurant = async () => {
-      try {
-        const response = await RestaurantService.getAllRestaurant();
+useEffect(() => {
+  const fetchRestaurant = async () => {
+    try {
+      
+      const response = await restaurantService.getRestaurantById(id);
 
-        if (response.status === 200) {
-          setRestaurants(response.data);
-          SetFilterRestaurants(response.data);
-        }
-      } catch (error) {
+      if (response.status === 200) {
+        setRestaurant(response.data);
+      } else {
+       
         Swal.fire({
-          title: "Get All Restaurant",
+          title: "Restaurant Not Found",
           icon: "error",
-          text: error?.response?.data?.message || error.message,
+          text: `No restaurant found with ID: ${id}`,
         });
       }
-    };
+    } catch (error) {
+      Swal.fire({
+        title: "Error fetching restaurant",
+        icon: "error",
+        text: "Could not retrieve restaurant data.",
+      });
+    }
+  };
+  fetchRestaurant();
+}, [id]);
 
-    getAllRestaurant();
-  }, []); // ✅ อย่าลืมใส่ dependency array เพื่อให้เรียกแค่ตอน mount
-
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setRestaurant({ ...restaurants, [name]: value });
+  };
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/v1/restaurants/" + id,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(restaurants),
+        }
+      );
+      if (response.ok) {
+        alert("Restaurant Updated succesfully!!!");
+        setRestaurant({
+          title: "",
+          type: "",
+          imageUrl: "",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="container mx-auto">
       <div class="relative flex flex-col justify-center h-screen overflow-hidden">
@@ -48,7 +83,7 @@ const Update = () => {
               <input
                 type="text"
                 name="title"
-                value={restaurant.title}
+                value={restaurants.title}
                 placeholder="Enter title"
                 class="w-full input input-bordered"
                 onChange={handleChange}
@@ -64,7 +99,7 @@ const Update = () => {
                 placeholder="Enter type"
                 class="w-full input input-bordered"
                 name="type"
-                value={restaurant.type}
+                value={restaurants.type}
                 onChange={handleChange}
               />
             </div>
@@ -79,25 +114,26 @@ const Update = () => {
                 class="w-full input input-bordered"
                 onChange={handleChange}
                 placeholder="Restaurant Img"
-                value={restaurant.img}
+                value={restaurants.imageUrl}
                 name="img"
               />
 
-              {restaurant.img && (
+              {restaurants.imageUrl && (
                 <div ClassName="flex items-center gap-2">
-                  <img ClassName="h-32" src={restaurant.img}></img>
+                  <img ClassName="h-32" src={restaurants.imageUrl}></img>
                 </div>
               )}
             </div>
 
             <div class="flex justify-center items-center my-6 space-x-4">
-              <button
+              <a
+                href={"/"}
                 type="submit"
                 class="btn bg-green-500 text-white px-6"
                 onClick={handleSubmit}
               >
-                Add
-              </button>
+                Update
+              </a>
               <a
                 href={"/"}
                 type="button"
@@ -112,5 +148,4 @@ const Update = () => {
     </div>
   );
 };
-
 export default Update;

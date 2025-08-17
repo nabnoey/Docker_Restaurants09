@@ -1,6 +1,9 @@
-import Restaurants from "../components/Restaurants";
+
 import api from "./api";
+
 const RESTO_API = import.meta.env.VITE_RESTO_API;
+
+
 
 //get all restaurant
 const getAllRestaurant = async () => {
@@ -24,9 +27,7 @@ const insertRestaurant = async (restaurant) => {
   return await api.post(RESTO_API, restaurant);
 };
 
-const deleteRestaurant = async (id) => {
-  return await api.put(RESTO_API, id);
-};
+const deleteRestaurant = async (id) => api.delete(`${RESTO_API}/${id}`);
 //delete restaurant
 
 const restaurantService = {

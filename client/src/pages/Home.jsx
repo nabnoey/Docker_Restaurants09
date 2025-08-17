@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/NavBar";
 import Restaurants from "../components/Restaurants";
-import RestaurantService from "../services/restaurant.service";
+import restaurantService from "../services/restaurant.service";
 import Swal from "sweetalert2";
+
+
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
-  const [filetedRestaurants, SetFilterRestaurants] = useState([]);
+  const [filetedRestaurants, setFilterRestaurants] = useState([]);
   const handleSearch = (keyword) => {
     if (keyword === "") {
-      SetFilterRestaurants(restaurants);
+      setFilterRestaurants(restaurants);
       return;
     }
     const result = restaurants.filter((restaurant) => {
@@ -18,16 +20,16 @@ const Home = () => {
       );
     });
 
-    SetFilterRestaurants(result);
+    setFilterRestaurants(result);
   };
   useEffect(() => {
     const getAllRestaurant = async () => {
       try {
-        const response = await RestaurantService.getAllRestaurant();
+        const response = await restaurantService.getAllRestaurant();
 
         if (response.status === 200) {
           setRestaurants(response.data);
-          SetFilterRestaurants(response.data);
+          setFilterRestaurants(response.data);
         }
       } catch (error) {
         Swal.fire({
