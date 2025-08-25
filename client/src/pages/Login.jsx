@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, use } from "react";
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router";
+import { useAuthContext } from "../context/auth.context";
 import Swal from "sweetalert2";
 
 const Login = () => {
@@ -10,6 +11,14 @@ const Login = () => {
   // 2. Hook for programmatic navigation
   const navigate = useNavigate();
 
+  const {login: loginFn, user} = useAuthContext();
+  
+ useEffect(() => {
+    if (user) {
+      navigate("/"); // Redirect if user is already logged in
+    }
+  }, [user, navigate]);
+  
   // 3. Handle input changes and update state
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +42,11 @@ const Login = () => {
           title: "User Login",
           text: "Login successfully!",
         }).then(() => {
+
+          // Call the login function from context to update user state
+          loginFn(currentUser.data);
+          navigate("/"); // Navigate to the home page after successful login
+
           // Navigate to the home page after successful login
           navigate("/");
         });
