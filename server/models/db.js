@@ -8,10 +8,12 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   port: dbConfig.PORT,
   dialect: dbConfig.DIALECT,//ประเภทฐานข้อมูล เช่น mysql, postgres,
   logging: false,//ปิดการแสดงผล log คำสั่ง SQL ในคอนโซล เพื่อให้ไม่แสดงข้อมูลเยอะเกินไป
- dialectOptions: dbConfig.SSL
-    ? { ssl: { require: true, rejectUnauthorized: false } }
-    : {}, // ถ้า DB_SSL=false จะไม่ใช้ SSL
-
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
 });
 
 const testConnection = async () => {
