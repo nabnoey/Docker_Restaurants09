@@ -8,6 +8,7 @@ import authRouter from "./routers/auth.router.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 const app = express();
 app.use(express.json());
@@ -34,7 +35,7 @@ app.get("/", (req, res) => {
 
 app.use(
   cors({
-    oring: ["http://localhost:5173", "127.0.0.1:5173"],
+    oring: ["http://localhost:5173", "127.0.0.1:5173", FRONTEND_URL],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Athorization, x-access-token"],
   })
