@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
+import Navbar from "../components/NavBar";
 import Restaurants from "../components/Restaurants";
+import restaurantService from "../services/restaurant.service";
+import Swal from "sweetalert2";
+
+
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
-  const [filetedRestaurants, SetFilterRestaurants] = useState([]);
+  const [filetedRestaurants, setFilterRestaurants] = useState([]);
   const handleSearch = (keyword) => {
     if (keyword === "") {
-      SetFilterRestaurants(restaurants);
+      setFilterRestaurants(restaurants);
       return;
     }
     const result = restaurants.filter((restaurant) => {
@@ -15,31 +20,30 @@ const Home = () => {
       );
     });
 
-    SetFilterRestaurants(result);
+    setFilterRestaurants(result);
   };
   useEffect(() => {
-    //cal api: getAllRestaurants
-    fetch("http://localhost:3000/restaurants")
-      .then((res) => {
-        //convert to json format
-        console.log(res);
-        return res.json();
-      })
-      .then((response) => {
-        //save to state
-        setRestaurants(response);
-        SetFilterRestaurants(response);
-      })
-      .catch((err) => {
-        //cath error
-        console.log(err.message);
-      });
+    const getAllRestaurant = async () => {
+      try {
+        const response = await restaurantService.getAllRestaurant();
+
+        if (response.status === 200) {
+          setRestaurants(response.data);
+          setFilterRestaurants(response.data);
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Get All Restaurant",
+          icon: "error",
+          text: error?.response?.data?.message || error.message,
+        });
+      }
+    };
+    getAllRestaurant();
   }, []);
+
   return (
     <div className="container mx-auto">
-      {
-        //Header
-      }
       <div>
         <h1 className="title justify-center text-3xl text-center m-5 p-5">
           Grab Restaurant

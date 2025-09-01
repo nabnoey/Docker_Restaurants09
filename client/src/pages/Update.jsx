@@ -1,128 +1,148 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
+import Swal from "sweetalert2";
+import restaurantService from "../services/restaurant.service";
+
 const Update = () => {
-  //Get ID from URL
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [restaurant, setRestaurant] = useState({
     title: "",
     type: "",
-    img: "",
+    imageUrl: "",
   });
 
-  //2.GEt Restaurant
+  // Fetch restaurant by ID
   useEffect(() => {
-    //cal api: getAllRestaurants
-    fetch("http://localhost:3000/restaurants/" + id)
-      .then((res) => {
-        //convert to json format
-        console.log(res);
-        return res.json();
-      })
-      .then((response) => {
-        //save to state
-        setRestaurant(response);
-      })
-      .catch((err) => {
-        //cath error
-        console.log(err.message);
-      });
+    const fetchRestaurant = async () => {
+      try {
+        const response = await restaurantService.getRestaurantById(id);
+        if (response.status === 200) {
+          setRestaurant(response.data);
+        } else {
+          Swal.fire({
+            title: "Restaurant Not Found",
+            text: `No restaurant found with ID: ${id}`,
+            icon: "error",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error fetching restaurant",
+          text: "Could not retrieve restaurant data.",
+          icon: "error",
+        });
+        console.error(error);
+      }
+    };
+
+    fetchRestaurant();
   }, [id]);
 
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setRestaurant({ ...restaurant, [name]: value });
   };
+
+  // Submit update
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3000/restaurants/" + id, {
-        method: "PUT",
-        body: JSON.stringify(restaurant),
-      });
-      if (response.ok) {
-        alert("Restaurant Updated succesfully!!!");
-        setRestaurant({
-          title: "",
-          type: "",
-          img: "",
+      const response = await restaurantService.editRestaurantById(id, restaurant);
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Restaurant Updated Successfully",
+          text: "Success",
+          icon: "success",
         });
+        navigate("/"); // redirect to home
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      Swal.fire({
+        title: "Error Updating Restaurant",
+        text: error.message || "Something went wrong",
+        icon: "error",
+      });
     }
   };
+
+  // Render image safely (local or hosted URL)
+  const renderImage = (img) => {
+    if (!img) return null;
+    const src = img.startsWith("http") ? img : `/images/${img}`; // local fallback
+    return <img className="h-32" src={src} alt="Restaurant" />;
+  };
+
   return (
     <div className="container mx-auto">
-      <div class="relative flex flex-col justify-center h-screen overflow-hidden">
-        <div class="w-full p-6 m-auto bg-white rounded-md shadow-md ring-2 ring-gray-800/50 lg:max-w-lg">
-          <h1 class="text-2xl font-semibold text-center text-gray-700 mb-6">
+      <div className="relative flex flex-col justify-center h-screen overflow-hidden">
+        <div className="w-full p-6 m-auto bg-white rounded-md shadow-md ring-2 ring-gray-800/50 lg:max-w-lg">
+          <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">
             Update Item
           </h1>
-          <form class="space-y-4">
+          <form className="space-y-4">
             <div>
-              <label class="label">
-                <span class="text-base label-text">Title</span>
+              <label className="label">
+                <span className="text-base label-text">Title</span>
               </label>
-
               <input
                 type="text"
                 name="title"
                 value={restaurant.title}
                 placeholder="Enter title"
-                class="w-full input input-bordered"
+                className="w-full input input-bordered"
                 onChange={handleChange}
               />
             </div>
 
             <div>
-              <label class="label">
-                <span class="text-base label-text">Type</span>
+              <label className="label">
+                <span className="text-base label-text">Type</span>
               </label>
               <input
                 type="text"
-                placeholder="Enter type"
-                class="w-full input input-bordered"
                 name="type"
                 value={restaurant.type}
+                placeholder="Enter type"
+                className="w-full input input-bordered"
                 onChange={handleChange}
               />
             </div>
 
             <div>
-              <label class="label">
-                <span class="text-base label-text">Image URL</span>
+              <label className="label">
+                <span className="text-base label-text">Image URL</span>
               </label>
               <input
                 type="text"
-                ClassName="grow"
-                class="w-full input input-bordered"
-                onChange={handleChange}
+                name="imageUrl"
+                value={restaurant.imageUrl}
                 placeholder="Restaurant Img"
-                value={restaurant.img}
-                name="img"
+                className="w-full input input-bordered grow"
+                onChange={handleChange}
               />
-
-              {restaurant.img && (
-                <div ClassName="flex items-center gap-2">
-                  <img ClassName="h-32" src={restaurant.img}></img>
-                </div>
-              )}
+              <div className="flex items-center gap-2 mt-2">
+                {renderImage(restaurant.imageUrl)}
+              </div>
             </div>
 
-            <div class="flex justify-center items-center my-6 space-x-4">
+            <div className="flex justify-center items-center my-6 space-x-4">
               <button
-                type="submit"
-                class="btn bg-green-500 text-white px-6"
+                type="button"
+                className="btn bg-green-500 text-white px-6"
                 onClick={handleSubmit}
               >
-                Add
+                Update
               </button>
-              <a
-                href={"/"}
+              <button
                 type="button"
-                class="btn bg-red-500 text-white px-6"
+                className="btn bg-red-500 text-white px-6"
+                onClick={() => navigate("/")}
               >
                 Cancel
-              </a>
+              </button>
             </div>
           </form>
         </div>
