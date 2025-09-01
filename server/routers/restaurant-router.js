@@ -15,7 +15,7 @@ router.get("/", authMiddleware.verifyToken,restaurantController.getAll);
 router.get("/:id",authMiddleware.verifyToken, restaurantController.getById);
 
 // UPDATE restaurant
-router.put("/:id",authMiddleware.isAdmin.authMiddleware.isAdmin, restaurantController.update);
+router.put("/:id",authMiddleware.isAdmin, restaurantController.update);
 
 // DELETE restaurant
 router.delete("/:id",authMiddleware.verifyToken,authMiddleware.isAdmin, restaurantController.deleteById);
