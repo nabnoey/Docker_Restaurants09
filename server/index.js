@@ -21,9 +21,9 @@ const Role = db.Role;
 //   Role.create({ id: 2, roleName: "moderator" });
 //   Role.create({ id: 3, roleName: "admin" });
 // };
-db.sequelize.sync({ force: false }).then(() => {
-  initRole();
-});
+// db.sequelize.sync({ force: false }).then(() => {
+//   initRole();
+// });
 
 db.sequelize.sync({ force: false }).then(() => {
   console.log("create table user_roles");
@@ -35,9 +35,9 @@ app.get("/", (req, res) => {
 
 app.use(
   cors({
-    oring: ["http://localhost:5173", "127.0.0.1:5173", FRONTEND_URL],
+    origin: ["http://localhost:5173", "127.0.0.1:5173", FRONTEND_URL],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Athorization, x-access-token"],
+    allowedHeaders: ["Content-Type", "Authorization, x-access-token"],
   })
 );
 
